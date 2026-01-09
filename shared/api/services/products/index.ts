@@ -1,0 +1,1 @@
+export { productSearchApi } from './productsApi'

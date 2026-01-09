@@ -1,13 +1,10 @@
-import {
-	Container,
-	Title,
-	TopBar,
-	Filters,
-	ProductsGroupList,
-	FilterCheckbox,
-	ProductCard,
-} from '@/components/shared'
+import { FiltersSidebar } from '@/features/product-filters/index'
+import { ProductsGroupList } from '@/widget/catalog/index'
 
+import { TopBar } from '@/widget/catalog/index'
+
+import { Container } from '@/shared/ui/container/index'
+import { Title } from '@/shared/ui/title/index'
 
 const Home = () => {
 	return (
@@ -19,10 +16,10 @@ const Home = () => {
 			<TopBar />
 
 			<Container className='mb-14 mt-10'>
-				<div className='flex gap-[80px]'>
+				<div className='flex gap-20'>
 					{/* Фильтрация Товаров*/}
-					<div className='w-[250px]'>
-						<Filters />
+					<div className='w-62.5'>
+						<FiltersSidebar />
 					</div>
 
 					{/* Список товаров*/}
@@ -30,7 +27,7 @@ const Home = () => {
 						<div className='flex flex-col gap-16'>
 							<ProductsGroupList
 								title='Пиццы'
-								items={[
+								products={[
 									{
 										id: 1,
 										name: 'Маргарита',
@@ -78,7 +75,7 @@ const Home = () => {
 							/>
 							<ProductsGroupList
 								title='Комбо'
-								items={[
+								products={[
 									{
 										id: 1,
 										name: 'Маргарита',
