@@ -58,7 +58,7 @@ export const product = [
 
 export const ingredients = [
 	{
-		name: 'Сырный бортик',
+		name: '123Сырный бортик',
 		price: 179,
 		imageUrl:
 			'https://cdn.dodostatic.net/static/Img/Ingredients/99f5cb91225b4875bd06a26d2e842106.png',

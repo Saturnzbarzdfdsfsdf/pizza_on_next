@@ -9,14 +9,15 @@ import { Ingredient } from '@/generated/prisma'
 interface IReturnProps {
 	ingredients: Ingredient[]
 	loading: boolean
-	selectedId: Set<string>
-  onAddId: (id: string) => void
+	selectedIngredients: Set<string>
+	onAddId: (id: string) => void
 }
 
-const useFiltersIngredients = (): IReturnProps => {
-	const [ingredients, setIngredients] = useState<Ingredient[]>([])
+export const useFiltersIngredients = (): IReturnProps => {
+
 	const [loading, setLoading] = useState(true)
-  const [selectedId, {toggle}] = useSet(new Set<string>([]))
+	const [ingredients, setIngredients] = useState<Ingredient[]>([])
+  const [selectedIngredients, { toggle }] = useSet(new Set<string>([]))
 
 	useEffect(() => {
 		async function fetchIngredients() {
@@ -34,7 +35,7 @@ const useFiltersIngredients = (): IReturnProps => {
 		fetchIngredients()
 	}, [])
 
-	return { ingredients, loading, onAddId: toggle, selectedId }
+
+	return { ingredients, loading, onAddId: toggle, selectedIngredients }
 }
 
-export default useFiltersIngredients

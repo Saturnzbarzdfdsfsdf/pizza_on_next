@@ -4,50 +4,71 @@
 import { Title } from '@/shared/ui/title'
 import { Input, RangeSlider } from '@/shared/ui/components/index'
 
-import { FilterCheckbox } from './filter-checkbox'
-import { CheckboxFiltersGroup } from './checkbox-filters-group'
-import { useProductFilters } from '../model/use-product-filters'
+// import { FilterCheckbox } from '@/features/product-filters/ui/filter-checkbox'
+import { CheckboxFiltersGroup } from '@/features/product-filters/ui/checkbox-filters-group'
+import { useProductFilters } from '@/features/product-filters/hooks/use-product-filters'
+import { useFiltersIngredients } from '@/features/product-filters/hooks/use-filters-ingredients'
+
+
 
 interface FiltersSidebarProps {
 	className?: string
 }
 
 export const FiltersSidebar = ({ className }: FiltersSidebarProps) => {
+
 	const {
 		filters,
-		ingredients,
 		loading,
 		toggleIngredient,
-		toggleAttribute,
+		toggleTypesDough,
+		toggleSizes,
 		updatePriceRange,
-		hasActiveFilters,
+		handlePriceChange,
 	} = useProductFilters()
 
-	const attributeItems = [
-		{ value: '1', text: 'Можно собирать' },
-		{ value: '2', text: 'Новинки' },
+	const { ingredients } = useFiltersIngredients()
+
+
+	const typesDough = [
+		{ value: '1', text: 'Классическое' },
+		{ value: '2', text: 'Тонкое' },
 	]
 
-	const ingredientItems = ingredients.map(item => ({
-		value: item.id,
-		text: item.name,
-	}))
+	const sizesPizzas = [
+		{ text: '20 cm', value: '20' },
+		{ text: '25 cm', value: '25' },
+		{ text: '30 cm', value: '30' },
+	]
 
 	return (
 		<div className={className}>
 			<Title text='Фильтрация' size='sm' className='mb-5 font-bold' />
 
-			{/* Атрибуты */}
+			{/* Чекбоксы типа пиццы */}
 			<div className='flex flex-col gap-4 mb-6'>
-				{attributeItems.map(item => (
-					<FilterCheckbox
-						key={item.value}
-						text={item.text}
-						value={item.value}
-						checked={filters.selectedAttributes.has(item.value)}
-						onCheckedChange={() => toggleAttribute(item.value)}
-					/>
-				))}
+				<CheckboxFiltersGroup
+					title='Тип теста'
+					items={typesDough}
+					getValue={item => item.value}
+					getLabel={item => item.text}
+					selectedId={filters.selectedTypesDough}
+					onClickCheckbox={toggleTypesDough}
+					loading={false}
+				/>
+			</div>
+
+			{/* Чекбоксы размеров пиццы */}
+			<div className='flex flex-col gap-4 mb-6'>
+				<CheckboxFiltersGroup
+					title='Размеры'
+					items={sizesPizzas}
+					getValue={item => item.value}
+					getLabel={item => item.text}
+					selectedId={filters.selectedSizesPizza}
+					onClickCheckbox={toggleSizes}
+					loading={false}
+				/>
 			</div>
 
 			{/* Фильтр цен */}
@@ -57,9 +78,7 @@ export const FiltersSidebar = ({ className }: FiltersSidebarProps) => {
 					<Input
 						type='number'
 						value={filters.priceRange[0]}
-						onChange={e =>
-							updatePriceRange([+e.target.value, filters.priceRange[1]])
-						}
+						onChange={e => handlePriceChange(0, +e.target.value)}
 						min={0}
 						max={5000}
 						placeholder='0'
@@ -67,9 +86,7 @@ export const FiltersSidebar = ({ className }: FiltersSidebarProps) => {
 					<Input
 						type='number'
 						value={filters.priceRange[1]}
-						onChange={e =>
-							updatePriceRange([filters.priceRange[0], +e.target.value])
-						}
+						onChange={e => handlePriceChange(1, +e.target.value)}
 						min={0}
 						max={5000}
 						placeholder='5000'
@@ -77,18 +94,20 @@ export const FiltersSidebar = ({ className }: FiltersSidebarProps) => {
 				</div>
 				<RangeSlider
 					min={0}
-					max={5000}
+					max={1000}
 					step={10}
 					value={filters.priceRange}
 					onValueChange={updatePriceRange}
 				/>
 			</div>
-
 			{/* Фильтр по ингредиентам */}
 			<CheckboxFiltersGroup
 				title='Ингредиенты'
+				name='ingredients'
 				limit={6}
-				items={ingredientItems}
+				items={ingredients} // ← Оригинальный массив
+				getValue={item => item.id.toString()} // ← Функция для value
+				getLabel={item => item.name} // ← Функция для label
 				loading={loading}
 				selectedId={filters.selectedIngredients}
 				onClickCheckbox={toggleIngredient}

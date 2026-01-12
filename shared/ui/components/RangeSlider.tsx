@@ -44,6 +44,7 @@ const RangeSlider = React.forwardRef(
 			}
 		}
 
+
 		return (
 			<SliderPrimitive.Root
 				ref={ref as React.RefObject<HTMLDivElement>}

@@ -48,15 +48,17 @@ export const useProductSearch = () => {
 		setIsOpen(false)
 	}, [])
 
+
+	
 	const openSearch = useCallback(() => setIsOpen(true), [])
 	const closeSearch = useCallback(() => setIsOpen(false), [])
 
 	return {
 		query,
-		setQuery,
 		products,
 		isLoading,
 		isOpen,
+		setQuery, 
 		openSearch,
 		closeSearch,
 		resetSearch,

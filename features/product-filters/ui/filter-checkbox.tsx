@@ -5,6 +5,7 @@ import { Checkbox } from '@/shared/ui/components/index'
 
 interface FilterCheckboxProps {
 	text: string
+	name?: string
 	value: string
 	endAdornment?: React.ReactNode
 	onCheckedChange?: (checked: boolean) => void
@@ -17,17 +18,19 @@ export const FilterCheckbox = ({
 	endAdornment,
 	onCheckedChange,
 	checked,
+	name
 }: FilterCheckboxProps) => {
+
 	return (
 		<div className='flex items-center space-x-2'>
 			<Checkbox
-				id={`filter-${value}`}
+				id={`checkbox-${value}-${name}`}
 				checked={checked}
 				onCheckedChange={onCheckedChange}
 				className='rounded-lg w-6 h-6'
 			/>
 			<label
-				htmlFor={`filter-${value}`}
+				htmlFor={`checkbox-${value}-${name}`}
 				className='leading-none cursor-pointer flex-1'
 			>
 				{text}

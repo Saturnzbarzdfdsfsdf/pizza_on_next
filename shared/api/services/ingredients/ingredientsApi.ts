@@ -7,3 +7,4 @@ export const getAll = async (): Promise<Ingredient[]> => {
   const { data } = await axiosInstances.get<Ingredient[]>(ApiRoutes.INGREDIENTS)
   return data
 }
+

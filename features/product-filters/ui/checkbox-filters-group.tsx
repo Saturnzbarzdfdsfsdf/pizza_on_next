@@ -5,35 +5,56 @@ import { useState } from 'react'
 
 import { Input, Skeleton } from '@/shared/ui/components/index'
 
-import { FilterCheckbox } from './filter-checkbox'
+import { FilterCheckbox } from '@/features/product-filters/ui/filter-checkbox'
 
-interface CheckboxItem {
-	value: string
-	text: string
+interface ICheckboxItem {
+	itemId: number
+	name: string
+	value: number
 	endAdornment?: React.ReactNode
 }
 
-interface CheckboxFiltersGroupProps {
+// interface ICheckboxFiltersGroupProps<T extends { id: number | string }> {
+// 	title: string
+// 	items: T[] // ← Принимаем оригинальные данные
+// 	getValue: (item: T) => string // ← Функция для получения value
+// 	getLabel: (item: T) => string // ← Функция для получения label
+// 	limit?: number
+// 	searchInputPlaceholder?: string
+// 	className?: string
+// 	loading: boolean
+// 	onClickCheckbox: (id: string) => void
+// 	selectedId?: Set<string>
+// 	name?: string
+// }
+
+interface ICheckboxFiltersGroupProps<T> {
 	title: string
-	items: CheckboxItem[]
-	limit?: number
-	searchInputPlaceholder?: string
-	className?: string
-	loading: boolean
-	onClickCheckbox?: (id: string) => void
+	items: T[]
+	getValue: (item: T) => string
+	getLabel: (item: T) => string
+	onClickCheckbox: (id: string) => void
 	selectedId?: Set<string>
+	loading: boolean
+	limit?: number
+	name?: string
+	className?: string
+	searchInputPlaceholder?: string
 }
 
-export const CheckboxFiltersGroup = ({
+export function CheckboxFiltersGroup<T>({
 	title,
 	items,
+	getValue,
+	getLabel,
 	limit = 5,
 	searchInputPlaceholder = 'Поиск...',
 	className,
 	loading,
 	onClickCheckbox,
 	selectedId,
-}: CheckboxFiltersGroupProps) => {
+	name,
+}: ICheckboxFiltersGroupProps<T>) {
 	const [showAll, setShowAll] = useState(false)
 	const [searchValue, setSearchValue] = useState('')
 
@@ -49,7 +70,7 @@ export const CheckboxFiltersGroup = ({
 	}
 
 	const filteredItems = (items || []).filter(item =>
-		item?.text?.toLowerCase().includes(searchValue.toLowerCase())
+		getLabel(item).toLowerCase().includes(searchValue.toLowerCase())
 	)
 
 	const displayedItems = showAll ? filteredItems : filteredItems.slice(0, limit)
@@ -72,17 +93,17 @@ export const CheckboxFiltersGroup = ({
 			<div className='flex flex-col gap-3 max-h-96 pr-2 overflow-auto'>
 				{displayedItems.map(item => (
 					<FilterCheckbox
-						key={item.value}
-						value={item.value}
-						text={item.text}
-						endAdornment={item.endAdornment}
-						checked={selectedId?.has(item.value)}
-						onCheckedChange={() => onClickCheckbox?.(item.value)}
+						key={getValue(item)}
+						name={name}
+						value={getValue(item)}
+						text={getLabel(item)}
+						checked={selectedId?.has(getValue(item))}
+						onCheckedChange={() => onClickCheckbox(getValue(item))}
 					/>
 				))}
 			</div>
 
-			{items.length > limit && (
+			{filteredItems.length > limit && (
 				<div
 					className={showAll ? 'border-t border-neutral-100 mt-4 pt-4' : 'mt-3'}
 				>
@@ -90,7 +111,7 @@ export const CheckboxFiltersGroup = ({
 						onClick={() => setShowAll(!showAll)}
 						className='text-primary hover:text-primary/80 transition-colors'
 					>
-						{showAll ? 'Скрыть' : `+ Показать все (${items.length})`}
+						{showAll ? 'Скрыть' : `+ Показать все (${filteredItems.length})`}
 					</button>
 				</div>
 			)}
